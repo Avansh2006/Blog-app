@@ -17,6 +17,8 @@ export class AuthService {
             // Ensure `userId` is valid
             userId = this.validateUserId(userId);
 
+            console.log("Valid userId:", userId); // Debugging log
+
             const userAccount = await this.account.create(userId, email, password, name);
             if (userAccount) {
                 return this.login({ email, password });
@@ -67,11 +69,12 @@ export class AuthService {
 
     // Correctly defined method to validate custom user IDs
     validateUserId(userId) {
-        const isValid = userId.length <= 36 
-            && /^[a-zA-Z0-9_.-]+$/.test(userId) 
+        const isValid = userId.length <= 36
+            && /^[a-zA-Z0-9_.-]+$/.test(userId)
             && !/^[^a-zA-Z0-9]/.test(userId);
 
         if (!isValid) {
+            console.log("Invalid userId:", userId); // Debugging log
             throw new Error(
                 "Invalid userId: Must be at most 36 characters and only include a-z, A-Z, 0-9, _, ., and -. Cannot start with a special character."
             );
