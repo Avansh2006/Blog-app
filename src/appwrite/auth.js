@@ -14,24 +14,25 @@ export class AuthService {
             
     }
 
-    async createAccount({email, password, name}) {
+     async createAccount({ email, password, name }) {
         try {
             const userAccount = await this.account.create(ID.unique(), email, password, name);
             if (userAccount) {
-               
-                return this.login({email, password});
+                return this.login({ email, password });
             } else {
-               return  userAccount;
+                return userAccount;
             }
         } catch (error) {
+            console.error("Error creating account:", error.message);
             throw error;
         }
     }
 
-    async login({email, password}) {
+    async login({ email, password }) {
         try {
-            return await this.account.createEmailSession(email, password);
+            return await this.account.createSession(email, password); // Updated method
         } catch (error) {
+            console.error("Error logging in:", error.message);
             throw error;
         }
     }
@@ -40,23 +41,30 @@ export class AuthService {
         try {
             return await this.account.get();
         } catch (error) {
-            console.log("Appwrite serive :: getCurrentUser :: error", error);
+            console.error("Error retrieving current user:", error.message);
+            throw error; // Or return null for a fallback
         }
-
-        return null;
     }
 
     async logout() {
-
         try {
             await this.account.deleteSessions();
         } catch (error) {
-            console.log("Appwrite serive :: logout :: error", error);
+            console.error("Error logging out:", error.message);
+            throw error; // Optional
+        }
+    }
+
+    async allowGuestAccess() {
+        try {
+            return await this.account.createAnonymousSession();
+        } catch (error) {
+            console.error("Error creating guest session:", error.message);
+            throw error;
         }
     }
 }
 
 const authService = new AuthService();
 
-export default authService
-
+export default authService;
