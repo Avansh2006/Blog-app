@@ -16,9 +16,7 @@ export class AuthService {
 
 async createAccount({ email, password, name, userId = ID.unique() }) {
     try {
-        if (!isValidUserId(userId)) {
-            throw new Error("Invalid userId: Must be at most 36 chars and contain valid characters.");
-        }
+        
 
         const userAccount = await this.account.create(userId, email, password, name);
         if (userAccount) {
@@ -32,10 +30,6 @@ async createAccount({ email, password, name, userId = ID.unique() }) {
     }
 }
 
-function isValidUserId(userId) {
-    const regex = /^[a-zA-Z0-9][a-zA-Z0-9._-]{0,35}$/;
-    return regex.test(userId);
-}
 
 
     async login({ email, password }) {
