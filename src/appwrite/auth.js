@@ -65,7 +65,7 @@ export class AuthService {
         }
     }
 
-    // Helper function to validate custom user IDs
+    // Correctly defined method to validate custom user IDs
     validateUserId(userId) {
         const isValid = userId.length <= 36 
             && /^[a-zA-Z0-9_.-]+$/.test(userId) 
