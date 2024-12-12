@@ -14,10 +14,13 @@ export class AuthService {
 
     async createAccount({ email, password, name, userId = ID.unique() }) {
         try {
-            // Ensure `userId` is valid
+            // Log the generated userId for debugging
+            console.log("Generated userId:", userId);
+
+            // Validate userId format
             userId = this.validateUserId(userId);
 
-            console.log("Valid userId:", userId); // Debugging log
+            console.log("Validated userId:", userId);  // Log the validated ID
 
             const userAccount = await this.account.create(userId, email, password, name);
             if (userAccount) {
@@ -67,14 +70,14 @@ export class AuthService {
         }
     }
 
-    // Correctly defined method to validate custom user IDs
+    // Validate userId format (must be alphanumeric, _, ., -, and no special chars at the start)
     validateUserId(userId) {
         const isValid = userId.length <= 36
-            && /^[a-zA-Z0-9_.-]+$/.test(userId)
-            && !/^[^a-zA-Z0-9]/.test(userId);
+            && /^[a-zA-Z0-9_.-]+$/.test(userId)  // Valid characters
+            && !/^[^a-zA-Z0-9]/.test(userId);     // No special chars at the start
 
         if (!isValid) {
-            console.log("Invalid userId:", userId); // Debugging log
+            console.log("Invalid userId:", userId); // Log invalid userId
             throw new Error(
                 "Invalid userId: Must be at most 36 characters and only include a-z, A-Z, 0-9, _, ., and -. Cannot start with a special character."
             );
@@ -85,5 +88,17 @@ export class AuthService {
 }
 
 const authService = new AuthService();
+
+// Example of testing with a manual ID
+authService.createAccount({
+    email: "user@example.com",
+    password: "password123",
+    name: "John Doe",
+    userId: "valid_user_123"  // Hardcoded ID to test
+}).then((user) => {
+    console.log("User created and logged in:", user);
+}).catch((error) => {
+    console.error("Error:", error.message);
+});
 
 export default authService;
